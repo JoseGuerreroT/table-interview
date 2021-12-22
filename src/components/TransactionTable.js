@@ -1,14 +1,26 @@
 import React from "react";
 
+
+const dateDefault = "2019-11-29"
+
 function TransactionTable({txns}) {
-  const sort = () => {};
+  const [dateSelected, setDateSelected] = React.useState(dateDefault);
+  const [transactions, setTransactions] = React.useState(txns);
+
+  const sort = () => setTransactions([ ...transactions.sort( (prev, curr) =>  prev.amount - curr.amount) ]);
 
   return (
     <div className="layout-column align-items-center mt-50">
       <section className="layout-row align-items-center justify-content-center">
         <label className="mr-10">Transaction Date</label>
-        <input id="date" type="date" defaultValue="2019-11-29" onChange="" />
-        <button className="small">Filter</button>
+        <input 
+          id="date" 
+          type="date" 
+          defaultValue={dateDefault} 
+          value={dateSelected} 
+          onChange={ e  => setDateSelected(e.target.value)} 
+        />
+        <button onClick={() => setTransactions([...txns.filter(({date}) => date === dateSelected)]) } className="small">Filter</button>
       </section>
 
       <div className="card mt-50">
@@ -25,13 +37,17 @@ function TransactionTable({txns}) {
               </tr>
               </thead>
               <tbody>
-              <tr>
-                  <td>date</td>
-                  <td>description</td>
-                  <td>type === 1 ? "Debit" : "Credit"</td>
-                  <td>amount</td>
-                  <td>balance</td>
-              </tr>
+                {
+                  transactions.map( ({date, description, type, amount, balance}) => 
+                    <tr key={description}>
+                        <td>{date}</td>
+                        <td>{description}</td>
+                        <td>{type === 1 ? "Debit" : "Credit"}</td>
+                        <td>{amount}</td>
+                        <td>{balance}</td>
+                    </tr>
+                  ) 
+                }
               </tbody>
           </table>
       </div>
